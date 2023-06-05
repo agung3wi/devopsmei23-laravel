@@ -23,7 +23,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/verison', function () {
+Route::get('/version', function () {
     return ["version" => "1.0"];
 });
 
