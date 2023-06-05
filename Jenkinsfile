@@ -17,31 +17,13 @@ node {
         }
     }
 
-    // Deploy ke Dev
+    // Deploy
     stage("Deploy"){
         docker.image('agung3wi/alpine-rsync:1.1').inside('-u root') {
-            sshagent (credentials: ['ssh-dev']) {
+            sshagent (credentials: ["$SSH_CRED"]) {
                 sh 'mkdir -p ~/.ssh'
                 sh 'ssh-keyscan -H "$HOST" > ~/.ssh/known_hosts'
                 sh "rsync -rav --delete ./ ubuntu@$HOST:/home/ubuntu/$HOST/ --exclude=.env --exclude=storage --exclude=.git"
-            }
-        }
-    }
-
-    // Testing
-    stage("Test"){
-        docker.image('ubuntu').inside('-u root') {
-            sh 'echo "Ini adalah integration test"'
-        }
-    }
-
-    // Deploy ke Prod
-    stage("Deploy"){
-        docker.image('agung3wi/alpine-rsync:1.1').inside('-u root') {
-            sshagent (credentials: ['ssh-prod']) {
-                sh 'mkdir -p ~/.ssh'
-                sh 'ssh-keyscan -H "$PROD_HOST" > ~/.ssh/known_hosts'
-                sh "rsync -rav --delete ./ ubuntu@$PROD_HOST:/home/ubuntu/$PROD_HOST/ --exclude=.env --exclude=storage --exclude=.git"
             }
         }
     }
